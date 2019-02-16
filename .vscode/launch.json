@@ -1,0 +1,16 @@
+// You must launch Chrome with remote debugging enabled for this to work.
+// In debian, kill Chrome then launch it with this:
+// google-chrome --remote-debugging-port=9222
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Attach to Chrome",
+            "port": 9222,
+            "webRoot": "${workspaceFolder}/src",
+            "url": "http://localhost:3000*"
+        }
+    ]
+}

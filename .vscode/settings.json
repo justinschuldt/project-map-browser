@@ -1,0 +1,10 @@
+{
+  // dont try to guess the indent
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.formatOnSave": true,
+  "javascript.format.enable": false,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true
+}
