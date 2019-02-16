@@ -13,12 +13,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "lib": [
-      "dom",
-      "esnext"
-    ]
+    "lib": ["dom", "esnext"]
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }
