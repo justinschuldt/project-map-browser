@@ -39,11 +39,18 @@ class App extends Component {
   // Web3
   portis?: Portis;
   web3?: Web3;
+  userLoggedIn = false;
+  gisWeb3?: Web3;
 
   // Contracts
-  tokenInstance?: any;
   standardBountiesInstance?: any;
   bountyRoyaltiesInstance?: any;
+  tokenInstance?: any;
+
+  gisStandardBountiesInstance?: any;
+  gisBountyRoyaltiesInstance?: any;
+  gisTokenInstance?: any;
+
   contractsConnected?: any;
 
   // Database Interfaces
@@ -62,6 +69,9 @@ class App extends Component {
         `https://rinkeby.infura.io/${process.env.REACT_APP_INFURA_API_KEY}`
       )
     );
+
+    //Set the web3 based on a static wallet to act as the owner.
+    // this.gisWeb3 =
 
     console.log('web3 infura connected', this.web3);
 
@@ -182,6 +192,19 @@ class App extends Component {
     user.metadata = await this.getUserMetadata(address);
     return user;
   }
+
+  // Users can submit data to a bounty - requires a logged in user.
+  async fulfillBounty(data: any) {}
+
+  async acceptFulfillment(
+    bountyId: any,
+    fulfillmentId: any,
+    percentage: number
+  ) {}
+
+  async sendRoyaltyDistribution() {}
+
+  async calculateRoyaltyDistribution() {}
 
   // Database Functions
 
