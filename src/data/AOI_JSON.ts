@@ -3,23 +3,21 @@ interface BasicProperties {
 }
 interface BountyProperties extends BasicProperties {
   fid: number;
-  name: string;
-  author?: string;
-  totalPool?: number;
-  bountyPercent?: number;
-  royaltyPercent?: number;
-  dateCreated?: string;
-  bountyExpires?: string;
-  royaltyExpires?: string;
-  bountyRamp?: string;
-  royaltyRamp?: string;
-  poolContract?: string;
+  author?: string | null;
+  totalPool?: number | null;
+  bountyPercent?: number | null;
+  royaltyPercent?: number | null;
+  dateCreated?: string | null;
+  bountyExpires?: string | null;
+  royaltyExpires?: string | null;
+  bountyRamp?: string | null;
+  royaltyRamp?: string | null;
+  poolContract?: string | null;
 }
-type Properties = BasicProperties | BountyProperties
 
 interface Crs {
   type: string;
-  properties: Properties
+  properties: BasicProperties
 }
 interface Geometry {
   type: string;
@@ -27,8 +25,13 @@ interface Geometry {
 }
 interface Feature {
   type: string;
-  properties: Properties
+  properties: BountyProperties
   geometry: Geometry;
+  formattedPoints?: FormattedPoint[]
+}
+export interface FormattedPoint {
+  lat: number,
+  lng: number
 }
 interface GeoData {
   type: string;
@@ -36,6 +39,7 @@ interface GeoData {
   crs: Crs;
   features: Feature[];
 }
+
 
 export const mockData: GeoData = {
   "type": "FeatureCollection",
