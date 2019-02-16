@@ -17,6 +17,9 @@ import {
   User,
   UserMetadata
 } from './definitions/entities/entities';
+import { UserMetadataRepo } from './data/UserMetadataRepo';
+import { BountyMetadataRepo } from './data/BountyMetadataRepo';
+import { MapRepo } from './data/MapRepo';
 
 const geoFindMe = () => {
   return new Promise((resolve, reject) => {
@@ -33,13 +36,27 @@ const geoFindMe = () => {
 };
 
 class App extends Component {
+  // Web3
   portis?: Portis;
   web3?: Web3;
+  userLoggedIn = false;
+  gisWeb3?: Web3;
 
-  tokenInstance?: any;
+  // Contracts
   standardBountiesInstance?: any;
   bountyRoyaltiesInstance?: any;
+  tokenInstance?: any;
+
+  gisStandardBountiesInstance?: any;
+  gisBountyRoyaltiesInstance?: any;
+  gisTokenInstance?: any;
+
   contractsConnected?: any;
+
+  // Database Interfaces
+  userMetadataRepo?: UserMetadataRepo = new UserMetadataRepo();
+  bountyMetadataRepo?: BountyMetadataRepo = new BountyMetadataRepo();
+  mapDataRepo?: MapRepo = new MapRepo();
 
   constructor(props: any) {
     super(props);
@@ -52,6 +69,9 @@ class App extends Component {
         `https://rinkeby.infura.io/${process.env.REACT_APP_INFURA_API_KEY}`
       )
     );
+
+    //Set the web3 based on a static wallet to act as the owner.
+    // this.gisWeb3 =
 
     console.log('web3 infura connected', this.web3);
 
@@ -154,7 +174,6 @@ class App extends Component {
       .call();
 
     bounty.metadata = await this.getBountyMetadata(bountyDataKey);
-
     bounty.arbiter = process.env.REACT_APP_GIS_CORPS_ADDRESS as any;
 
     console.log('bounty found', bounty);
@@ -174,22 +193,45 @@ class App extends Component {
     return user;
   }
 
+  // Users can submit data to a bounty - requires a logged in user.
+  async fulfillBounty(data: any) {}
+
+  async acceptFulfillment(
+    bountyId: any,
+    fulfillmentId: any,
+    percentage: number
+  ) {}
+
+  async sendRoyaltyDistribution() {}
+
+  async calculateRoyaltyDistribution() {}
+
   // Database Functions
 
   async getBountyMetadata(key: string): Promise<BountyMetadata> {
-    let metadata: BountyMetadata = {
+    const dummyData: BountyMetadata = {
       title: 'Bounty Title',
       description: 'Bounty Description'
     };
-    return metadata;
+
+    if (!this.bountyMetadataRepo) {
+      return dummyData;
+    }
+
+    return this.bountyMetadataRepo.get(key) || dummyData;
   }
   async getUserMetadata(key: string): Promise<UserMetadata> {
-    let metadata: UserMetadata = {
+    const dummyData: UserMetadata = {
       name: 'Test User',
       bio: 'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
       imgUrl: ''
     };
-    return metadata;
+
+    if (!this.userMetadataRepo) {
+      return dummyData;
+    }
+
+    return this.userMetadataRepo.get(key) || dummyData;
   }
 
   render() {
