@@ -16,7 +16,7 @@ import {
   BountyMetadata,
   User,
   UserMetadata
-} from './definitions/entities/userMetadata';
+} from './definitions/entities/entities';
 
 const geoFindMe = () => {
   return new Promise((resolve, reject) => {
