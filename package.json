@@ -1,0 +1,19 @@
+{
+  "name": "project-map-browser",
+  "version": "0.0.1",
+  "description": "a javascript application built for web3",
+  "main": "build/index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justinschuldt/project-map-browser.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/justinschuldt/project-map-browser/issues"
+  },
+  "homepage": "https://github.com/justinschuldt/project-map-browser#readme"
+}
