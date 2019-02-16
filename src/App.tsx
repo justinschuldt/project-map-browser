@@ -11,7 +11,12 @@ import StandardBountiesAbi from '../src/definitions/contractAbi/StandardBounties
 import HumanStandardTokenAbi from '../src/definitions/contractAbi/HumanStandardToken.json';
 
 import LandingPage from './components/LandingPage';
-import { Bounty, BountyMetadata } from './definitions/entities/userMetadata';
+import {
+  Bounty,
+  BountyMetadata,
+  User,
+  UserMetadata
+} from './definitions/entities/userMetadata';
 
 const geoFindMe = () => {
   return new Promise((resolve, reject) => {
@@ -103,7 +108,7 @@ class App extends Component {
 
     this.contractsConnected = true;
 
-    await this.getBounty(0);
+    await this.getBounties();
   }
 
   async initEventListeners() {}
@@ -148,7 +153,7 @@ class App extends Component {
       .getBountyData(bountyId)
       .call();
 
-    bounty.metadata = bountyDataKey;
+    bounty.metadata = await this.getBountyMetadata(bountyDataKey);
 
     bounty.arbiter = process.env.REACT_APP_GIS_CORPS_ADDRESS as any;
 
@@ -156,10 +161,36 @@ class App extends Component {
     return bounty;
   }
 
+  async getUser(address: string): Promise<User> {
+    let user: User = {} as User;
+
+    const userStats = await this.standardBountiesInstance.methods
+      .getUserStats(address)
+      .call();
+    user.address = address;
+    user.bountiesWon = userStats[0];
+    user.royaltiesWon = userStats[1];
+    user.metadata = await this.getUserMetadata(address);
+    return user;
+  }
+
   // Database Functions
 
-  async getBountyMetadata(key: number) {}
-  async getUserMetadata(key: number) {}
+  async getBountyMetadata(key: string): Promise<BountyMetadata> {
+    let metadata: BountyMetadata = {
+      title: 'Bounty Title',
+      description: 'Bounty Description'
+    };
+    return metadata;
+  }
+  async getUserMetadata(key: string): Promise<UserMetadata> {
+    let metadata: UserMetadata = {
+      name: 'Test User',
+      bio: 'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
+      imgUrl: ''
+    };
+    return metadata;
+  }
 
   render() {
     return (
