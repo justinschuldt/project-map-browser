@@ -53,6 +53,7 @@ class App extends Component {
     this.getBounties = this.getBounties.bind(this);
     this.getBounty = this.getBounty.bind(this);
     this.acceptFulfillment = this.acceptFulfillment.bind(this);
+    this.submitBounty = this.submitBounty.bind(this);
 
     // Default INFURA provider for read access
     // this.setWeb3(
@@ -263,6 +264,10 @@ class App extends Component {
       return;
     }
 
+    if (!this.userLoggedIn) {
+      await this.portisClicked();
+    }
+
     console.log('bounty submitted', bountyId);
 
     const accounts = await this.web3.eth.getAccounts();
@@ -444,6 +449,7 @@ class App extends Component {
             getBounties={this.getBounties}
             acceptFufillment={this.acceptFulfillment}
             getBounty={this.getBounty}
+            submitBounty={this.submitBounty}
           />
 
           <Button type="primary" onClick={this.portisClicked}>

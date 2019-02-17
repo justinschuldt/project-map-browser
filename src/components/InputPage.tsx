@@ -25,6 +25,7 @@ export class InputPage extends Component<IInputPageProps> {
       feature: mockDataFindById(props.match.params.id) as Feature
     };
     this.submitBounty = this.submitBounty.bind(this);
+    this.loadBountyInfo();
   }
   componentWillMount() {
     const feature = mockDataFindById(this.props.match.params.id);
