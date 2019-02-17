@@ -52,6 +52,7 @@ class App extends Component {
     this.getUserPastEvents = this.getUserPastEvents.bind(this);
     this.getBounties = this.getBounties.bind(this);
     this.acceptFulfillment = this.acceptFulfillment.bind(this);
+    this.getTokenBalance = this.getTokenBalance.bind(this);
 
     // Default INFURA provider for read access
     // this.setWeb3(
@@ -264,7 +265,7 @@ class App extends Component {
       .send({ from: this.web3.eth.accounts[0] });
   }
 
-  async getTokenBalance(address: string) {
+  async getTokenBalance(address: string): Promise<any> {
     return await this.tokenInstance.methods.balanceOf(address);
   }
 
@@ -434,6 +435,7 @@ class App extends Component {
             getUserPastEvents={this.getUserPastEvents}
             getBounties={this.getBounties}
             acceptFufillment={this.acceptFulfillment}
+            getTokenBalance={this.getTokenBalance}
           />
           <Button type="primary" onClick={this.portisClicked}>
             Login with Portis

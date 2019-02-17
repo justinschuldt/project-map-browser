@@ -16,6 +16,7 @@ interface ILandingPageProps {
     fulfillmentId: any,
     percentage: number
   ) => void;
+  getTokenBalance: (address: string) => Promise<any>;
 }
 class LandingPage extends Component<ILandingPageProps> {
   constructor(props: ILandingPageProps) {
