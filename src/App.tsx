@@ -133,7 +133,7 @@ class App extends Component {
     await this.getAllRoyaltyDistributions();
   }
 
-  async initEventListeners() {}
+  async initEventListeners() { }
 
   // Mass of blockchain actions
   async getBounties() {
@@ -342,7 +342,7 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <div className="logo" />
-          <LandingPage />
+          <LandingPage web3={this.web3} />
           <Button type="primary" onClick={geoFindMe}>
             get location
           </Button>
