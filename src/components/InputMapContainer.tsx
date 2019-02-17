@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { Map, GoogleApiWrapper } from 'google-maps-react'
-import { Button, Icon } from 'antd'
+import { Button, Card, Icon, Modal } from 'antd'
+import { Feature } from '../data/AOI_JSON';
 
 interface IInputMapContainerProps {
   google?: any
   inputComplete: (geoData: any) => void
+  feature: Feature
 }
 interface PolylineFeature {
   type: string,
@@ -24,15 +26,19 @@ export class InputMapContainer extends Component<IInputMapContainerProps> {
   google: any
   state: {
     submitting: boolean
+    showSuccessModal: boolean
   }
   constructor(props: IInputMapContainerProps) {
     super(props)
     this.state = {
-      submitting: false
+      submitting: false,
+      showSuccessModal: false
+
     }
     this.addLatLng = this.addLatLng.bind(this)
     this.onMapReady = this.onMapReady.bind(this)
     this.submitStructure = this.submitStructure.bind(this)
+    this.dismissSuccess = this.dismissSuccess.bind(this)
   }
   onMapReady(mapProps: any, map: any) {
     // forgive me, but it works
@@ -138,10 +144,8 @@ export class InputMapContainer extends Component<IInputMapContainerProps> {
         pt.lng(), pt.lat()]);
     }
     geoJson.features.push(polylineFeature);
-    // document.getElementById('geojson').value = JSON.stringify(geoJson);
-    // polyline.setPath([]);
+
     this.map.data.addGeoJson(geoJson);
-    // Set the stroke width, and fill color for each polygon
 
     this.map.data.setStyle({
       fillColor: '#36db2e',
@@ -155,15 +159,28 @@ export class InputMapContainer extends Component<IInputMapContainerProps> {
 
       setTimeout(() => {
         this.setState(() => ({
-          submitting: false
+          submitting: false,
+          showSuccessModal: true
         }))
       }, 3000)
     });
+  }
+  dismissSuccess() {
+    this.setState(() => ({
+      showSuccessModal: false
+    }))
   }
 
   render() {
     return (
       <>
+        <Card title={this.props.feature.properties.name} bordered={false} style={{ width: '100%' }}>
+          <div>
+            <p><span style={{ fontWeight: 500, fontSize: 16 }}>Objective: </span>Report areas with stagnant water</p>
+            <p><span style={{ fontWeight: 500, fontSize: 16 }}>Reward: </span> Each submission earns $4</p>
+            <p><span style={{ fontWeight: 500, fontSize: 16 }}>Timeframe: </span> Bounty expires on February 24th, 8:00am local time</p>
+          </div>
+        </Card>
         <Map
           google={this.props.google}
           zoom={7}
@@ -180,6 +197,19 @@ export class InputMapContainer extends Component<IInputMapContainerProps> {
         <div style={{ position: 'absolute', bottom: 35, right: 85 }}>
           <Button type="primary" shape="circle" size="large" loading={this.state.submitting} onClick={this.submitStructure} ><Icon type="cloud-upload" /></Button>
         </div>
+        <Modal
+          title="Success!"
+          visible={this.state.showSuccessModal}
+          footer={[
+            <Button key="submit" type="primary" onClick={this.dismissSuccess}>
+              Done
+            </Button>
+          ]}
+        >
+          <p>Your submission was accepted.</p>
+          <p>It will be reviewed, check the <a href="/users">users page</a> for updates.</p>
+          <p>Thanks for contributing to Project Map.</p>
+        </Modal>
       </>
     );
   }

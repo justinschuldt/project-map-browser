@@ -57,3 +57,5 @@ The salient features of this model are as follows:
 - Typescript
 - [Create React App Config Overrides](https://github.com/sharegate/craco)
 - [Antd](https://ant.design/docs/react/introduce)
+
+Smart contract repository can be found here(https://github.com/tspoff/project-map-solidity)

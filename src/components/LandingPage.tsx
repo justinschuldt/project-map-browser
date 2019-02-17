@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import AdminPage from './AdminPage';
 import BountyMap from './BountyMapContainer';
 import InputPage from './InputPage';
+import UserPage from './UserPage';
 import { Bounty } from '../definitions/entities/entities';
 
 interface ILandingPageProps {
@@ -16,6 +17,8 @@ interface ILandingPageProps {
     fulfillmentId: any,
     percentage: number
   ) => void;
+  getBounty: (bountyId: number) => Promise<Bounty>;
+  submitBounty?: (bountyId: number, data: any) => void;
 }
 class LandingPage extends Component<ILandingPageProps> {
   constructor(props: ILandingPageProps) {
@@ -30,7 +33,12 @@ class LandingPage extends Component<ILandingPageProps> {
             <Route
               path="/bounty/:id"
               render={routerProps => (
-                <InputPage web3={this.props.web3} match={routerProps.match} />
+                <InputPage
+                  web3={this.props.web3}
+                  match={routerProps.match}
+                  submitBounty={this.props.submitBounty}
+                  getBounty={this.props.getBounty}
+                />
               )}
             />
             <Route
@@ -45,7 +53,15 @@ class LandingPage extends Component<ILandingPageProps> {
                 />
               )}
             />
-
+            <Route
+              path="/user"
+              render={routerProps => (
+                <UserPage
+                  web3={this.props.web3}
+                  getUserPastEvents={this.props.getUserPastEvents}
+                />
+              )}
+            />
           </>
         </Router>
       </div>

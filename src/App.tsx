@@ -51,7 +51,9 @@ class App extends Component {
     this.sendRoyaltyDistribution = this.sendRoyaltyDistribution.bind(this);
     this.getUserPastEvents = this.getUserPastEvents.bind(this);
     this.getBounties = this.getBounties.bind(this);
+    this.getBounty = this.getBounty.bind(this);
     this.acceptFulfillment = this.acceptFulfillment.bind(this);
+    this.submitBounty = this.submitBounty.bind(this);
 
     // Default INFURA provider for read access
     // this.setWeb3(
@@ -65,7 +67,6 @@ class App extends Component {
     this.connectToMetamask();
 
     console.log('web3 infura connected', this.web3);
-
   }
 
   portisClicked() {
@@ -259,11 +260,22 @@ class App extends Component {
   }
 
   async submitBounty(bountyId: number, data: any) {
+    if (!this.web3) {
+      return;
+    }
 
-    this.standardBountiesInstance.methods
-      .fulfillBounty()
+    if (!this.userLoggedIn) {
+      await this.portisClicked();
+    }
+
+    console.log('bounty submitted', bountyId);
+
+    const accounts = await this.web3.eth.getAccounts();
+
+    await this.standardBountiesInstance.methods
+      .fulfillBounty(bountyId, '1')
       // @ts-ignore
-      .send({ from: this.web3.eth.accounts[0] });
+      .send({ from: accounts[0] });
   }
 
   async getTokenBalance(address: string) {
@@ -287,7 +299,7 @@ class App extends Component {
     console.log('contract instances init');
   }
 
-  async initEventListeners() { }
+  async initEventListeners() {}
 
   // Mass of blockchain actions
   async getBounties() {
@@ -436,6 +448,8 @@ class App extends Component {
             getUserPastEvents={this.getUserPastEvents}
             getBounties={this.getBounties}
             acceptFufillment={this.acceptFulfillment}
+            getBounty={this.getBounty}
+            submitBounty={this.submitBounty}
           />
 
           <Button type="primary" onClick={this.portisClicked}>
