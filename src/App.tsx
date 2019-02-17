@@ -48,16 +48,21 @@ class App extends Component {
     this.portisClicked = this.portisClicked.bind(this);
     this.blocknativeClicked = this.blocknativeClicked.bind(this);
     this.sendRoyaltyDistribution = this.sendRoyaltyDistribution.bind(this);
+    this.sendRoyaltyDistribution = this.sendRoyaltyDistribution.bind(this);
     this.getUserPastEvents = this.getUserPastEvents.bind(this);
+    this.getBounties = this.getBounties.bind(this);
+    this.acceptFulfillment = this.acceptFulfillment.bind(this);
 
     // Default INFURA provider for read access
-    this.setWeb3(
-      new Web3(
-        new Web3.providers.HttpProvider(
-          `https://rinkeby.infura.io/${process.env.REACT_APP_INFURA_API_KEY}`
-        )
-      )
-    );
+    // this.setWeb3(
+    //   new Web3(
+    //     new Web3.providers.HttpProvider(
+    //       `https://rinkeby.infura.io/${process.env.REACT_APP_INFURA_API_KEY}`
+    //     )
+    //   )
+    // );
+
+    this.connectToMetamask();
 
     console.log('web3 infura connected', this.web3);
   }
@@ -109,7 +114,7 @@ class App extends Component {
       )
       // @ts-ignore
       .then(events => {
-        console.log(events); // same results as the optional callback above
+        console.log('BountyIssued', events); // same results as the optional callback above
       });
 
     this.standardBountiesInstance
@@ -126,7 +131,7 @@ class App extends Component {
       )
       // @ts-ignore
       .then(events => {
-        console.log(events); // same results as the optional callback above
+        console.log('BountyActivated', events); // same results as the optional callback above
       });
 
     this.standardBountiesInstance
@@ -143,7 +148,7 @@ class App extends Component {
       )
       // @ts-ignore
       .then(events => {
-        console.log(events); // same results as the optional callback above
+        console.log('BountyFulfilled', events); // same results as the optional callback above
       });
 
     this.standardBountiesInstance
@@ -160,7 +165,7 @@ class App extends Component {
       )
       // @ts-ignore
       .then(events => {
-        console.log(events); // same results as the optional callback above
+        console.log('FulfillmentAcceptedPartial', events); // same results as the optional callback above
       });
 
     this.standardBountiesInstance
@@ -177,7 +182,7 @@ class App extends Component {
       )
       // @ts-ignore
       .then(events => {
-        console.log(events); // same results as the optional callback above
+        console.log('RoyaltyFunded', events); // same results as the optional callback above
       });
 
     this.standardBountiesInstance
@@ -189,7 +194,7 @@ class App extends Component {
         },
         // @ts-ignore
         (error, events) => {
-          console.log(events);
+          console.log('PayoutGenerated', events);
         }
       )
       // @ts-ignore
@@ -206,7 +211,7 @@ class App extends Component {
         },
         // @ts-ignore
         (error, events) => {
-          console.log(events);
+          console.log('OwnerAdded', events);
         }
       )
       // @ts-ignore
@@ -409,6 +414,26 @@ class App extends Component {
 
   // Royalty Distribution
 
+  async sendRoyaltyDistibutionSimple() {
+    if (!this.web3) {
+      return;
+    }
+    const accounts = await this.web3.eth.getAccounts();
+    console.log('attempting to send from', accounts[0] || '');
+
+    const numBounties = await this.standardBountiesInstance.methods
+      .getNumBounties()
+      .call();
+
+    console.log('numBounties', numBounties);
+
+    for (let i = 0; i < numBounties; i++) {
+      await this.standardBountiesInstance.methods
+        .distributeRoyaltyFundsSimple(i)
+        .send({ from: accounts[0] });
+    }
+  }
+
   async sendRoyaltyDistribution() {
     if (!this.web3) {
       return;
@@ -428,8 +453,15 @@ class App extends Component {
       bountyIds.push(distrubtions[i].bountyId);
     }
 
+    console.log(
+      'preparing to send distributions...',
+      bountyIds,
+      values,
+      payees
+    );
+
     await this.standardBountiesInstance.methods
-      .distributeRoyaltyFunds(bountyIds, values, payees)
+      .distributeRoyaltyFundsSimple(bountyIds, values, payees)
       // @ts-ignore
       .send({ from: accounts[0] });
   }
@@ -467,7 +499,7 @@ class App extends Component {
     royaltyFinances.balance = financesData[1];
     royaltyFinances.distributionPercent = financesData[2];
 
-    const royaltyOwners = await this.getRoyaltyOwners(i);
+    const royaltyOwners = await this.getRoyaltyBeneficiaries(i);
 
     let royaltyDistributions: Array<RoyaltyDistribution> = [];
 
@@ -484,7 +516,21 @@ class App extends Component {
     return royaltyDistributions;
   }
 
-  async getRoyaltyOwners(bountyId: number) {
+  async payoutBountyPartial(
+    bountyId: number,
+    fulfillmentId: number,
+    percentage: number
+  ) {
+    if (!this.web3) {
+      return;
+    }
+    const accounts = await this.web3.eth.getAccounts();
+    await this.standardBountiesInstance.methods
+      .acceptFulfillmentPartial(bountyId, fulfillmentId, percentage)
+      .send({ from: accounts[0] });
+  }
+
+  async getRoyaltyBeneficiaries(bountyId: number) {
     let royaltyOwners: Array<RoyaltyOwnerInfo> = [];
 
     const numRoyalties = await this.standardBountiesInstance.methods
@@ -493,7 +539,7 @@ class App extends Component {
 
     for (let i = 0; i < numRoyalties; i++) {
       const ownerInfo = await this.standardBountiesInstance.methods
-        .getRoyaltyOwner(bountyId, i)
+        .getRoyaltyBeneficiary(bountyId, i)
         .call();
 
       console.log('ownerInfo found', ownerInfo);
@@ -503,6 +549,7 @@ class App extends Component {
       });
     }
 
+    console.log('royaltyOwners - raw output', royaltyOwners);
     return royaltyOwners;
   }
 
@@ -543,6 +590,8 @@ class App extends Component {
             web3={this.web3}
             sendRoyaltyDistribution={this.sendRoyaltyDistribution}
             getUserPastEvents={this.getUserPastEvents}
+            getBounties={this.getBounties}
+            acceptFufillment={this.acceptFulfillment}
           />
           <Button type="primary" onClick={this.portisClicked}>
             Login with Portis
