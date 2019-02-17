@@ -111,6 +111,108 @@ class App extends Component {
       .then(events => {
         console.log(events); // same results as the optional callback above
       });
+
+    this.standardBountiesInstance
+      .getPastEvents(
+        'BountyActivated',
+        {
+          fromBlock: 0,
+          toBlock: 'latest'
+        },
+        // @ts-ignore
+        (error, events) => {
+          console.log(events);
+        }
+      )
+      // @ts-ignore
+      .then(events => {
+        console.log(events); // same results as the optional callback above
+      });
+
+    this.standardBountiesInstance
+      .getPastEvents(
+        'BountyFulfilled',
+        {
+          fromBlock: 0,
+          toBlock: 'latest'
+        },
+        // @ts-ignore
+        (error, events) => {
+          console.log(events);
+        }
+      )
+      // @ts-ignore
+      .then(events => {
+        console.log(events); // same results as the optional callback above
+      });
+
+    this.standardBountiesInstance
+      .getPastEvents(
+        'FulfillmentAcceptedPartial',
+        {
+          fromBlock: 0,
+          toBlock: 'latest'
+        },
+        // @ts-ignore
+        (error, events) => {
+          console.log(events);
+        }
+      )
+      // @ts-ignore
+      .then(events => {
+        console.log(events); // same results as the optional callback above
+      });
+
+    this.standardBountiesInstance
+      .getPastEvents(
+        'RoyaltyFunded',
+        {
+          fromBlock: 0,
+          toBlock: 'latest'
+        },
+        // @ts-ignore
+        (error, events) => {
+          console.log(events);
+        }
+      )
+      // @ts-ignore
+      .then(events => {
+        console.log(events); // same results as the optional callback above
+      });
+
+    this.standardBountiesInstance
+      .getPastEvents(
+        'PayoutGenerated',
+        {
+          fromBlock: 0,
+          toBlock: 'latest'
+        },
+        // @ts-ignore
+        (error, events) => {
+          console.log(events);
+        }
+      )
+      // @ts-ignore
+      .then(events => {
+        console.log(events); // same results as the optional callback above
+      });
+
+    this.standardBountiesInstance
+      .getPastEvents(
+        'OwnerAdded',
+        {
+          fromBlock: 0,
+          toBlock: 'latest'
+        },
+        // @ts-ignore
+        (error, events) => {
+          console.log(events);
+        }
+      )
+      // @ts-ignore
+      .then(events => {
+        console.log(events); // same results as the optional callback above
+      });
   }
 
   async getUserPastEvents(userAddress: string) {
@@ -144,6 +246,9 @@ class App extends Component {
 
       await this.initContractInstances();
       await this.subscribeToPastEvents();
+      await this.getUserPastEvents(
+        '0x8ECF64e7c55B0176e305F8e51E171A81C3D99B4B'
+      );
 
       if (this.userLoggedIn) {
         await this.sendRoyaltyDistribution();
