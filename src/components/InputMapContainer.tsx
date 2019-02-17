@@ -176,10 +176,9 @@ export class InputMapContainer extends Component<IInputMapContainerProps> {
       <>
         <Card title={this.props.feature.properties.name} bordered={false} style={{ width: '100%' }}>
           <div>
-            <p>Report areas with stagnant water</p>
-            <p>Each submission earns $4</p>
-            <p>Bounty expires on February 24th, 8:00am local time</p>
-            <p>Touch the map to get started...</p>
+            <p><span style={{ fontWeight: 500, fontSize: 16 }}>Objective: </span>Report areas with stagnant water</p>
+            <p><span style={{ fontWeight: 500, fontSize: 16 }}>Reward: </span> Each submission earns $4</p>
+            <p><span style={{ fontWeight: 500, fontSize: 16 }}>Timeframe: </span> Bounty expires on February 24th, 8:00am local time</p>
           </div>
         </Card>
         <Map
