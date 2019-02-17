@@ -14,17 +14,24 @@ Our royalty contract is engineered such that reward pools can incentivize more r
 
 *Figure 1 - Plot showing basic linear reward decay for both bounty and royalty.*
 
+
+
 ![](https://github.com/justinschuldt/project-map-browser/blob/master/images/charts/linear_cumulative.PNG)
 
 *Figure 2 - Cumulative reward payouts over time. Note lower initial royalty payments still provide the majority of the total incentive.*
+
+
 
 ![](https://github.com/justinschuldt/project-map-browser/blob/master/images/charts/exponential_daily.PNG)
 
 *Figure 3 - Daily reward payouts in exponential decay. Front-weighted incentivization would encourage timely edits.*
 
+
+
 ![](https://github.com/justinschuldt/project-map-browser/blob/master/images/charts/exponential_cumulative.PNG)
 
 *Figure 4 - Cumulative rewards with exponential decay. Early edits and near-term consumption of map features accounts for a vast majority of incentive pool.*
+
 
 ## built with
 
