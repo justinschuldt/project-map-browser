@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Map, GoogleApiWrapper } from 'google-maps-react'
-import { Button, Card, Icon, Modal } from 'antd'
+import { Button, Card, Icon, Modal, Spin } from 'antd'
 import { Feature } from '../data/AOI_JSON';
 import { Link } from 'react-router-dom';
 interface IInputMapContainerProps {
@@ -42,11 +42,15 @@ export class InputMapContainer extends Component<IInputMapContainerProps> {
   }
   onMapReady(mapProps: any, map: any) {
     // forgive me, but it works
-    // setTimeout(() => map.setZoom(10), 1400)
-    setTimeout(() => map.setZoom(11), 1600)
-    setTimeout(() => map.setZoom(12), 2000)
-    setTimeout(() => map.setZoom(13), 2200)
-    setTimeout(() => map.setZoom(14), 2400)
+    setTimeout(() => map.setZoom(9), 1600)
+    setTimeout(() => map.setZoom(11), 2000)
+    setTimeout(() => map.setZoom(12), 2200)
+    setTimeout(() => map.setZoom(13), 2400)
+    setTimeout(() => map.setZoom(14), 2600)
+    setTimeout(() => map.setZoom(15), 2800)
+    setTimeout(() => map.setZoom(16), 3000)
+    setTimeout(() => map.setZoom(17), 3200)
+    setTimeout(() => map.setZoom(18), 3400)
 
     const { google } = mapProps
     this.google = google
@@ -178,19 +182,21 @@ export class InputMapContainer extends Component<IInputMapContainerProps> {
   render() {
     return (
       <>
-        <Card title={this.props.feature.properties.name} bordered={false} style={{ width: '100%' }}>
-          <div>
-            <p><span style={{ fontWeight: 500, fontSize: 16 }}>Objective: </span>Report areas with stagnant water</p>
-            <p><span style={{ fontWeight: 500, fontSize: 16 }}>Reward: </span> Each submission earns $4</p>
-            <p><span style={{ fontWeight: 500, fontSize: 16 }}>Timeframe: </span> Bounty expires on February 24th, 8:00am local time</p>
-          </div>
-        </Card>
+        <Spin spinning={this.state.submitting} tip="Storing your submission..." >
+          <Card title={this.props.feature.properties.name} bordered={false} style={{ width: '100%' }}>
+            <div>
+              <p><span style={{ fontWeight: 500, fontSize: 16 }}>Objective: </span>Report areas with stagnant water</p>
+              <p><span style={{ fontWeight: 500, fontSize: 16 }}>Reward: </span> Each submission earns $4</p>
+              <p><span style={{ fontWeight: 500, fontSize: 16 }}>Timeframe: </span> Bounty expires on February 24th, 8:00am local time</p>
+            </div>
+          </Card>
+        </Spin>
         <Map
           google={this.props.google}
           zoom={7}
           initialCenter={{
-            lat: -4,
-            lng: 39.7
+            lat: -4.002427,
+            lng: 39.5580713
           }}
           onReady={this.onMapReady}
           fullscreenControl={false}
@@ -214,6 +220,7 @@ export class InputMapContainer extends Component<IInputMapContainerProps> {
           <p>It will be reviewed, check the <Link to="/user">users page</Link> for updates.</p>
           <p>Thanks for contributing to Project Map.</p>
         </Modal>
+
       </>
     );
   }
