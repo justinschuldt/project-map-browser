@@ -1,3 +1,4 @@
+import { RoyaltyFinancesData } from './entities';
 export interface UserMetadata {
   name: string;
   bio: string;
@@ -32,4 +33,21 @@ export enum BountyStages {
   Draft,
   Active,
   Dead
+}
+
+export interface RoyaltyFinancesData {
+  initialFunding: any;
+  balance: any;
+  distributionPercent: any;
+}
+
+export interface RoyaltyOwnerInfo {
+  address: any;
+  value: any;
+}
+
+export interface RoyaltyDistribution {
+  address: any;
+  value: any;
+  bountyId: any;
 }

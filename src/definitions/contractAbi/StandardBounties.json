@@ -5,9 +5,66 @@
       {
         "name": "_bountyId",
         "type": "uint256"
+      },
+      {
+        "name": "_fulfillmentId",
+        "type": "uint256"
+      },
+      {
+        "name": "_percentage",
+        "type": "uint256"
       }
     ],
-    "name": "killBounty",
+    "name": "acceptFulfillmentPartial",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_bountyId",
+        "type": "uint256"
+      },
+      {
+        "name": "_index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getRoyaltyOwner",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_bountyIds",
+        "type": "uint256[]"
+      },
+      {
+        "name": "_values",
+        "type": "uint256[]"
+      },
+      {
+        "name": "_payees",
+        "type": "address[]"
+      }
+    ],
+    "name": "distributeRoyaltyFunds",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -45,25 +102,12 @@
       }
     ],
     "name": "fulfillBounty",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
+    "outputs": [
       {
-        "name": "_bountyId",
-        "type": "uint256"
-      },
-      {
-        "name": "_newDeadline",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "extendDeadline",
-    "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
@@ -152,14 +196,41 @@
         "type": "uint256"
       },
       {
-        "name": "_newIssuer",
+        "name": "_newOwner",
         "type": "address"
+      },
+      {
+        "name": "_weight",
+        "type": "uint256"
       }
     ],
-    "name": "transferIssuer",
+    "name": "addRoyaltyBeneficiary",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserStats",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -224,53 +295,6 @@
     "type": "function"
   },
   {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_issuer",
-        "type": "address"
-      },
-      {
-        "name": "_deadline",
-        "type": "uint256"
-      },
-      {
-        "name": "_data",
-        "type": "string"
-      },
-      {
-        "name": "_fulfillmentAmount",
-        "type": "uint256"
-      },
-      {
-        "name": "_arbiter",
-        "type": "address"
-      },
-      {
-        "name": "_paysTokens",
-        "type": "bool"
-      },
-      {
-        "name": "_tokenContract",
-        "type": "address"
-      },
-      {
-        "name": "_value",
-        "type": "uint256"
-      }
-    ],
-    "name": "issueAndActivateBounty",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": true,
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
     "constant": true,
     "inputs": [
       {
@@ -329,6 +353,48 @@
         "type": "uint256"
       }
     ],
+    "name": "getRoyaltyDailyDistribution",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_bountyId",
+        "type": "uint256"
+      },
+      {
+        "name": "_index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getRoyaltyOwnerCount",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_bountyId",
+        "type": "uint256"
+      }
+    ],
     "name": "getBountyData",
     "outputs": [
       {
@@ -338,6 +404,24 @@
     ],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_bountyId",
+        "type": "uint256"
+      },
+      {
+        "name": "_forwardingAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setRoyaltiesForwardingAddress",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -379,47 +463,84 @@
         "type": "uint256"
       },
       {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "fundRoyalty",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_bountyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getRoyaltyFinances",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_bountyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getRoyaltyOwners",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address[]"
+      },
+      {
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_bountyId",
+        "type": "uint256"
+      },
+      {
         "name": "_newArbiter",
         "type": "address"
       }
     ],
     "name": "changeBountyArbiter",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_bountyId",
-        "type": "uint256"
-      },
-      {
-        "name": "_newDeadline",
-        "type": "uint256"
-      }
-    ],
-    "name": "changeBountyDeadline",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_bountyId",
-        "type": "uint256"
-      },
-      {
-        "name": "_fulfillmentId",
-        "type": "uint256"
-      }
-    ],
-    "name": "acceptFulfillment",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -449,6 +570,10 @@
       },
       {
         "name": "fulfillmentAmount",
+        "type": "uint256"
+      },
+      {
+        "name": "fulfillmentDistributed",
         "type": "uint256"
       },
       {
@@ -552,6 +677,10 @@
     "inputs": [
       {
         "name": "_owner",
+        "type": "address"
+      },
+      {
+        "name": "_tokenAddress",
         "type": "address"
       }
     ],
@@ -659,6 +788,33 @@
       },
       {
         "indexed": true,
+        "name": "fulfiller",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "_fulfillmentId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "_percentage",
+        "type": "uint256"
+      }
+    ],
+    "name": "FulfillmentAcceptedPartial",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "bountyId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
         "name": "issuer",
         "type": "address"
       }
@@ -749,6 +905,101 @@
       }
     ],
     "name": "PayoutIncreased",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "bountyId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "RoyaltyFunded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "bountyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "RoyaltyExhausted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "bountyId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "payee",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "PayoutGenerated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "bountyId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "weight",
+        "type": "uint256"
+      }
+    ],
+    "name": "OwnerAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "bountyId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "beneficiary",
+        "type": "address"
+      }
+    ],
+    "name": "ForwarderSet",
     "type": "event"
   }
 ]
