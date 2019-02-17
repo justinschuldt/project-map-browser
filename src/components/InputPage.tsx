@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import InputMapContainer from './InputMapContainer';
+import { Feature, mockData } from '../data/AOI_JSON';
 import { Bounty } from '../definitions/entities/entities';
-import { BountyMapContainer } from './BountyMapContainer';
+
+const mockDataFindById = (id: number) => {
+  const { features } = mockData;
+  return features.find(f => f.properties.fid === Number(id));
+};
 
 interface IInputPageProps {
   match: any;
@@ -11,17 +16,22 @@ interface IInputPageProps {
 }
 
 export class InputPage extends Component<IInputPageProps> {
+  state: {
+    feature: Feature;
+  };
   constructor(props: IInputPageProps) {
     super(props);
+    this.state = {
+      feature: mockDataFindById(props.match.params.id) as Feature
+    };
     this.submitBounty = this.submitBounty.bind(this);
-    this.loadBountyInfo();
   }
-
-  async loadBountyInfo() {
-    const bounty = await this.props.getBounty(this.props.match.params.id);
-    this.setState({ bounty: bounty });
+  componentWillMount() {
+    const feature = mockDataFindById(this.props.match.params.id);
+    this.setState(() => ({
+      feature
+    }));
   }
-
   submitBounty(geoData: any) {
     console.log('InputPage.submitBounty() geoData: ', geoData);
     if (this.props.submitBounty) {
@@ -31,6 +41,15 @@ export class InputPage extends Component<IInputPageProps> {
   render() {
     console.log(
       `inputPage rendered for bountyId: ${this.props.match.params.id}`
+    );
+    if (!this.state.feature) {
+      return null;
+    }
+    return (
+      <InputMapContainer
+        inputComplete={this.submitBounty}
+        feature={this.state.feature}
+      />
     );
     return <InputMapContainer inputComplete={this.submitBounty} />;
   }
