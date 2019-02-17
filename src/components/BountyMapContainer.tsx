@@ -27,8 +27,8 @@ export class BountyMapContainer extends Component<IMapContainerProps> {
           google={this.props.google}
           zoom={8}
           initialCenter={{
-            lat: -3.7853519,
-            lng: 38.5534278
+            lat: -4.03,
+            lng: 39.6
           }}
           fullscreenControl={false}
           onReady={this.loadGeojson}
