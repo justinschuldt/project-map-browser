@@ -15,7 +15,10 @@ import {
   Bounty,
   BountyMetadata,
   User,
-  UserMetadata
+  UserMetadata,
+  RoyaltyFinancesData,
+  RoyaltyDistribution,
+  RoyaltyOwnerInfo
 } from './definitions/entities/entities';
 import { UserMetadataRepo } from './data/UserMetadataRepo';
 import { BountyMetadataRepo } from './data/BountyMetadataRepo';
@@ -40,16 +43,10 @@ class App extends Component {
   portis?: Portis;
   web3?: Web3;
   userLoggedIn = false;
-  gisWeb3?: Web3;
 
   // Contracts
   standardBountiesInstance?: any;
-  bountyRoyaltiesInstance?: any;
   tokenInstance?: any;
-
-  gisStandardBountiesInstance?: any;
-  gisBountyRoyaltiesInstance?: any;
-  gisTokenInstance?: any;
 
   contractsConnected?: any;
 
@@ -69,9 +66,6 @@ class App extends Component {
         `https://rinkeby.infura.io/${process.env.REACT_APP_INFURA_API_KEY}`
       )
     );
-
-    //Set the web3 based on a static wallet to act as the owner.
-    // this.gisWeb3 =
 
     console.log('web3 infura connected', this.web3);
 
@@ -124,11 +118,17 @@ class App extends Component {
       process.env.REACT_APP_STANDARD_BOUNTIES_ADDRESS
     );
 
+    this.tokenInstance = new this.web3.eth.Contract(
+      HumanStandardTokenAbi as any,
+      process.env.REACT_APP_TOKEN_ADDRESS
+    );
+
     console.log('contract instances init');
 
     this.contractsConnected = true;
 
     await this.getBounties();
+    await this.getAllRoyaltyDistributions();
   }
 
   async initEventListeners() {}
@@ -194,17 +194,118 @@ class App extends Component {
   }
 
   // Users can submit data to a bounty - requires a logged in user.
-  async fulfillBounty(data: any) {}
+  async fulfillBounty(bountyId: number, data: any) {
+    if (!this.userLoggedIn) {
+      return;
+    }
+
+    const fulfillmentId = await this.standardBountiesInstance.methods
+      .fulfillBounty()
+      .send(bountyId, data);
+    console.log(fulfillmentId);
+
+    this.acceptFulfillment(bountyId, fulfillmentId, 25);
+  }
 
   async acceptFulfillment(
     bountyId: any,
     fulfillmentId: any,
     percentage: number
-  ) {}
+  ) {
+    await this.standardBountiesInstance.methods
+      .acceptFulfillmentPartial(bountyId, fulfillmentId, percentage)
+      .send({ from: process.env.REACT_APP_GIS_CORPS_ADDRESS });
 
-  async sendRoyaltyDistribution() {}
+    await this.getAllRoyaltyDistributions();
+  }
 
-  async calculateRoyaltyDistribution() {}
+  // Royalty Distribution
+
+  async sendRoyaltyDistribution() {
+    const distrubtions = await this.getAllRoyaltyDistributions();
+
+    let payees = [];
+    let values = [];
+    let bountyIds = [];
+
+    for (let i = 0; i < distrubtions.length; i++) {
+      payees.push(distrubtions[i].address);
+      values.push(distrubtions[i].value);
+      bountyIds.push(distrubtions[i].bountyId);
+    }
+  }
+
+  async getAllRoyaltyDistributions(): Promise<Array<RoyaltyDistribution>> {
+    let allDistributions: Array<RoyaltyDistribution> = [];
+
+    const numBounties = await this.standardBountiesInstance.methods
+      .getNumBounties()
+      .call();
+
+    console.log('numBounties', numBounties);
+
+    for (let i = 0; i < numBounties; i++) {
+      const distributions = await this.calculateRoyaltyDistribution(i);
+      allDistributions.push(...distributions);
+    }
+
+    console.log('All distributions', allDistributions);
+    return allDistributions;
+  }
+
+  async calculateRoyaltyDistribution(
+    i: number
+  ): Promise<Array<RoyaltyDistribution>> {
+    let royaltyFinances: RoyaltyFinancesData = {} as RoyaltyFinancesData;
+
+    const financesData = await this.standardBountiesInstance.methods
+      .getRoyaltyFinances(i)
+      .call();
+
+    console.log(financesData);
+
+    royaltyFinances.initialFunding = financesData[0];
+    royaltyFinances.balance = financesData[1];
+    royaltyFinances.distributionPercent = financesData[2];
+
+    const royaltyOwners = await this.getRoyaltyOwners(i);
+
+    let royaltyDistributions: Array<RoyaltyDistribution> = [];
+
+    //Add bounty Id
+    for (let owner of royaltyOwners) {
+      royaltyDistributions.push({
+        address: owner.address,
+        value: owner.value,
+        bountyId: i
+      });
+    }
+
+    console.log(royaltyOwners);
+    return royaltyDistributions;
+  }
+
+  async getRoyaltyOwners(bountyId: number) {
+    let royaltyOwners: Array<RoyaltyOwnerInfo> = [];
+
+    const numRoyalties = await this.standardBountiesInstance.methods
+      .getRoyaltyOwnerCount(bountyId, 0)
+      .call();
+
+    for (let i = 0; i < numRoyalties; i++) {
+      const ownerInfo = await this.standardBountiesInstance.methods
+        .getRoyaltyOwner(bountyId, i)
+        .call();
+
+      console.log('ownerInfo found', ownerInfo);
+      royaltyOwners.push({
+        address: ownerInfo[0],
+        value: ownerInfo[1]
+      });
+    }
+
+    return royaltyOwners;
+  }
 
   // Database Functions
 
