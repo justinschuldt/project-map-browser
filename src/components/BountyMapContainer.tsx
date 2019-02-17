@@ -38,13 +38,12 @@ export class BountyMapContainer extends Component<IMapContainerProps> {
       map.setZoom(11)
     }, 2600)
     setTimeout(() => {
-
       map.setZoom(13)
-    }, 3000)
+    }, 3100)
     setTimeout(() => {
       // add markers when zooming is complete
-      map.data.loadGeoJson('PointsClip_EPSG4326.json')
-    }, 3200)
+      map.data.loadGeoJson('PointsClip_EPSG4326_Thin.json')
+    }, 3300)
 
 
   }
@@ -63,8 +62,8 @@ export class BountyMapContainer extends Component<IMapContainerProps> {
           google={this.props.google}
           zoom={4}
           initialCenter={{
-            lat: -4.03,
-            lng: 39.6
+            lat: -4.0385066,
+            lng: 39.649095
           }}
           fullscreenControl={false}
           streetViewControl={false}
