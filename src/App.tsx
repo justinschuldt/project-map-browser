@@ -112,7 +112,7 @@ class App extends Component {
   }
 
   async initContractInstances() {
-    if (!this.web3 || !this.gisWeb3) {
+    if (!this.web3) {
       return;
     }
     this.standardBountiesInstance = new this.web3.eth.Contract(
