@@ -462,14 +462,17 @@ class App extends Component {
             acceptFufillment={this.acceptFulfillment}
             getBounty={this.getBounty}
             submitBounty={this.submitBounty}
+            kickoffBlocknative={this.blocknativeClicked}
           />
 
-          <Button type="primary" onClick={this.portisClicked}>
+          {/* for debugging  */}
+          {/* <Button type="primary" onClick={this.portisClicked}>
             Login with Portis
           </Button>
           <Button type="primary" onClick={this.blocknativeClicked}>
             Login with Blocknative
-          </Button>
+          </Button> */}
+
         </header>
       </div>
     );

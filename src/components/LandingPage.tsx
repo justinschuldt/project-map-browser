@@ -19,6 +19,7 @@ interface ILandingPageProps {
   ) => void;
   getBounty: (bountyId: number) => Promise<Bounty>;
   submitBounty?: (bountyId: number, data: any) => Promise<any>;
+  kickoffBlocknative: () => void
 }
 class LandingPage extends Component<ILandingPageProps> {
   constructor(props: ILandingPageProps) {
@@ -59,6 +60,7 @@ class LandingPage extends Component<ILandingPageProps> {
                 <UserPage
                   web3={this.props.web3}
                   getUserPastEvents={this.props.getUserPastEvents}
+                  kickoffBlocknative={this.props.kickoffBlocknative}
                 />
               )}
             />
