@@ -29,6 +29,7 @@ class App extends Component {
   portis?: Portis;
   web3?: Web3;
   userLoggedIn = false;
+  BN?: any;
 
   // Contracts
   standardBountiesInstance?: any;
@@ -49,15 +50,19 @@ class App extends Component {
     this.blocknativeClicked = this.blocknativeClicked.bind(this);
     this.sendRoyaltyDistribution = this.sendRoyaltyDistribution.bind(this);
     this.getUserPastEvents = this.getUserPastEvents.bind(this);
+    this.getBounties = this.getBounties.bind(this);
+    this.acceptFulfillment = this.acceptFulfillment.bind(this);
 
     // Default INFURA provider for read access
-    this.setWeb3(
-      new Web3(
-        new Web3.providers.HttpProvider(
-          `https://rinkeby.infura.io/${process.env.REACT_APP_INFURA_API_KEY}`
-        )
-      )
-    );
+    // this.setWeb3(
+    //   new Web3(
+    //     new Web3.providers.HttpProvider(
+    //       `https://rinkeby.infura.io/${process.env.REACT_APP_INFURA_API_KEY}`
+    //     )
+    //   )
+    // );
+
+    this.connectToMetamask();
 
     console.log('web3 infura connected', this.web3);
   }
@@ -95,59 +100,121 @@ class App extends Component {
 
   async subscribeToPastEvents() {
     console.log('subscribed to past events');
-    this.standardBountiesInstance
-      .getPastEvents(
-        'BountyIssued',
-        {
-          fromBlock: 0,
-          toBlock: 'latest'
-        },
-        // @ts-ignore
-        (error, events) => {
-          console.log(events);
-        }
-      )
+    this.standardBountiesInstance.getPastEvents(
+      'BountyIssued',
+      {
+        fromBlock: 0,
+        toBlock: 'latest'
+      },
       // @ts-ignore
-      .then(events => {
-        console.log(events); // same results as the optional callback above
-      });
+      (error, events) => {
+        console.log('BountyIssued', events);
+      }
+    );
+
+    this.standardBountiesInstance.getPastEvents(
+      'BountyActivated',
+      {
+        fromBlock: 0,
+        toBlock: 'latest'
+      },
+      // @ts-ignore
+      (error, events) => {
+        console.log('BountyActivated', events);
+      }
+    );
+
+    this.standardBountiesInstance.getPastEvents(
+      'BountyFulfilled',
+      {
+        fromBlock: 0,
+        toBlock: 'latest'
+      },
+      // @ts-ignore
+      (error, events) => {
+        console.log('BountyFulfilled', events);
+      }
+    );
+
+    this.standardBountiesInstance.getPastEvents(
+      'FulfillmentAcceptedPartial',
+      {
+        fromBlock: 0,
+        toBlock: 'latest'
+      },
+      // @ts-ignore
+      (error, events) => {
+        console.log('FulfillmentAcceptedPartial', events);
+      }
+    );
+
+    this.standardBountiesInstance.getPastEvents(
+      'RoyaltyFunded',
+      {
+        fromBlock: 0,
+        toBlock: 'latest'
+      },
+      // @ts-ignore
+      (error, events) => {
+        console.log('RoyaltyFunded', events);
+      }
+    );
+
+    this.standardBountiesInstance.getPastEvents(
+      'PayoutGenerated',
+      {
+        fromBlock: 0,
+        toBlock: 'latest'
+      },
+      // @ts-ignore
+      (error, events) => {
+        console.log('PayoutGenerated', events);
+      }
+    );
+    this.standardBountiesInstance.getPastEvents(
+      'OwnerAdded',
+      {
+        fromBlock: 0,
+        toBlock: 'latest'
+      },
+      // @ts-ignore
+      (error, events) => {
+        console.log('OwnerAdded', events);
+      }
+    );
   }
 
   async getUserPastEvents(userAddress: string) {
     console.log('subscribed to user events', userAddress);
-    this.standardBountiesInstance
-      .getPastEvents(
-        'PayoutGenerated',
-        {
-          filter: { owner: userAddress },
-          fromBlock: 0,
-          toBlock: 'latest'
-        },
-        // @ts-ignore
-        (error, events) => {
-          console.log(events);
-        }
-      )
+    this.standardBountiesInstance.getPastEvents(
+      'PayoutGenerated',
+      {
+        filter: { owner: userAddress },
+        fromBlock: 0,
+        toBlock: 'latest'
+      },
       // @ts-ignore
-      .then(events => {
-        console.log(events); // same results as the optional callback above
-      });
+      (error, events) => {
+        console.log('UserPast', events);
+      }
+    );
   }
 
   async setWeb3(web3: Web3) {
     if (web3) {
       this.web3 = web3;
       console.log('web3 available');
+      // @ts-ignore
+      this.BN = web3.utils.BN;
       web3.eth.getAccounts((error, accounts) => {
         console.log(accounts);
       });
 
       await this.initContractInstances();
       await this.subscribeToPastEvents();
-
-      if (this.userLoggedIn) {
-        await this.sendRoyaltyDistribution();
-      }
+      await this.getUserPastEvents(
+        '0x8ECF64e7c55B0176e305F8e51E171A81C3D99B4B'
+      );
     }
   }
 
@@ -195,6 +262,10 @@ class App extends Component {
       .fulfillBounty()
       // @ts-ignore
       .send({ from: this.web3.eth.accounts[0] });
+  }
+
+  async getTokenBalance(address: string) {
+    return await this.tokenInstance.methods.balanceOf(address);
   }
 
   async initContractInstances() {
@@ -299,7 +370,7 @@ class App extends Component {
       .acceptFulfillmentPartial(bountyId, fulfillmentId, percentage)
       .send({ from: process.env.REACT_APP_GIS_CORPS_ADDRESS });
 
-    await this.getAllRoyaltyDistributions();
+    await this.sendRoyaltyDistribution();
   }
 
   // Royalty Distribution
@@ -308,29 +379,8 @@ class App extends Component {
     if (!this.web3) {
       return;
     }
-    const distrubtions = await this.getAllRoyaltyDistributions();
-
     const accounts = await this.web3.eth.getAccounts();
     console.log('attempting to send from', accounts[0] || '');
-
-    let payees = [];
-    let values = [];
-    let bountyIds = [];
-
-    for (let i = 0; i < distrubtions.length; i++) {
-      payees.push(distrubtions[i].address);
-      values.push(distrubtions[i].value);
-      bountyIds.push(distrubtions[i].bountyId);
-    }
-
-    await this.standardBountiesInstance.methods
-      .distributeRoyaltyFunds(bountyIds, values, payees)
-      // @ts-ignore
-      .send({ from: accounts[0] });
-  }
-
-  async getAllRoyaltyDistributions(): Promise<Array<RoyaltyDistribution>> {
-    let allDistributions: Array<RoyaltyDistribution> = [];
 
     const numBounties = await this.standardBountiesInstance.methods
       .getNumBounties()
@@ -339,66 +389,10 @@ class App extends Component {
     console.log('numBounties', numBounties);
 
     for (let i = 0; i < numBounties; i++) {
-      const distributions = await this.calculateRoyaltyDistribution(i);
-      allDistributions.push(...distributions);
+      await this.standardBountiesInstance.methods
+        .distributeRoyaltyFundsSimple(i)
+        .send({ from: accounts[0] });
     }
-
-    console.log('All distributions', allDistributions);
-    return allDistributions;
-  }
-
-  async calculateRoyaltyDistribution(
-    i: number
-  ): Promise<Array<RoyaltyDistribution>> {
-    let royaltyFinances: RoyaltyFinancesData = {} as RoyaltyFinancesData;
-
-    const financesData = await this.standardBountiesInstance.methods
-      .getRoyaltyFinances(i)
-      .call();
-
-    console.log(financesData);
-
-    royaltyFinances.initialFunding = financesData[0];
-    royaltyFinances.balance = financesData[1];
-    royaltyFinances.distributionPercent = financesData[2];
-
-    const royaltyOwners = await this.getRoyaltyOwners(i);
-
-    let royaltyDistributions: Array<RoyaltyDistribution> = [];
-
-    //Add bounty Id
-    for (let owner of royaltyOwners) {
-      royaltyDistributions.push({
-        address: owner.address,
-        value: owner.value,
-        bountyId: i
-      });
-    }
-
-    console.log(royaltyOwners);
-    return royaltyDistributions;
-  }
-
-  async getRoyaltyOwners(bountyId: number) {
-    let royaltyOwners: Array<RoyaltyOwnerInfo> = [];
-
-    const numRoyalties = await this.standardBountiesInstance.methods
-      .getRoyaltyOwnerCount(bountyId, 0)
-      .call();
-
-    for (let i = 0; i < numRoyalties; i++) {
-      const ownerInfo = await this.standardBountiesInstance.methods
-        .getRoyaltyOwner(bountyId, i)
-        .call();
-
-      console.log('ownerInfo found', ownerInfo);
-      royaltyOwners.push({
-        address: ownerInfo[0],
-        value: ownerInfo[1]
-      });
-    }
-
-    return royaltyOwners;
   }
 
   // Database Functions
@@ -438,6 +432,8 @@ class App extends Component {
             web3={this.web3}
             sendRoyaltyDistribution={this.sendRoyaltyDistribution}
             getUserPastEvents={this.getUserPastEvents}
+            getBounties={this.getBounties}
+            acceptFufillment={this.acceptFulfillment}
           />
           <Button type="primary" onClick={this.portisClicked}>
             Login with Portis

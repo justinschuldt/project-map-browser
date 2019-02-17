@@ -132,6 +132,20 @@
       {
         "name": "_bountyId",
         "type": "uint256"
+      }
+    ],
+    "name": "distributeRoyaltyFundsSimple",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_bountyId",
+        "type": "uint256"
       },
       {
         "name": "_fulfillmentId",
