@@ -4,6 +4,7 @@ import InputMapContainer from './InputMapContainer'
 interface IInputPageProps {
   match: any
   web3: any
+  submitBounty?: (bountyId: number, data: any) => void
 }
 
 export class InputPage extends Component<IInputPageProps> {
@@ -12,9 +13,8 @@ export class InputPage extends Component<IInputPageProps> {
     this.submitBounty = this.submitBounty.bind(this)
   }
   submitBounty(geoData: any) {
-    console.log('submitBounty geoData: ', geoData)
-    // TODO: send the geoData up
-    // this.props.web3
+    console.log('InputPage.submitBounty() geoData: ', geoData)
+    // this.props.submitBounty(this.props.match.params.id, geoData)
   }
   render() {
     console.log(`inputPage rendered for bountyId: ${this.props.match.params.id}`)

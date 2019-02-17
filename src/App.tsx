@@ -65,6 +65,7 @@ class App extends Component {
     this.connectToMetamask();
 
     console.log('web3 infura connected', this.web3);
+
   }
 
   portisClicked() {
@@ -258,6 +259,7 @@ class App extends Component {
   }
 
   async submitBounty(bountyId: number, data: any) {
+
     this.standardBountiesInstance.methods
       .fulfillBounty()
       // @ts-ignore
@@ -285,7 +287,7 @@ class App extends Component {
     console.log('contract instances init');
   }
 
-  async initEventListeners() {}
+  async initEventListeners() { }
 
   // Mass of blockchain actions
   async getBounties() {
@@ -435,6 +437,7 @@ class App extends Component {
             getBounties={this.getBounties}
             acceptFufillment={this.acceptFulfillment}
           />
+
           <Button type="primary" onClick={this.portisClicked}>
             Login with Portis
           </Button>
