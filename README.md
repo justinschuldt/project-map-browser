@@ -1,10 +1,5 @@
 # ProjectMap
 
-<!--
-traditional inline image, no scaling
-![](https://github.com/justinschuldt/project-map-browser/blob/master/images/logo.png)
--->
-
 <img src="https://github.com/justinschuldt/project-map-browser/blob/master/images/logo.png" width=150">
 
 ## Overview
