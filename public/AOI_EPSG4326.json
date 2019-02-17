@@ -1575,50 +1575,6 @@
           ]
         ]
       }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "fid": 5,
-        "name": "South Kenya Master Project",
-        "author": "0x0F1b5da3e5AA1AC434A070f45fDF27bAa3981908",
-        "totalPool": 5000000.0,
-        "bountyPercent": 10.0,
-        "royaltyPercent": 90.0,
-        "dateCreated": "2018\/01\/01",
-        "bountyExpires": "2020\/10\/01",
-        "royaltyExpires": "2023\/08\/31",
-        "bountyRamp": "exponential",
-        "royaltyRamp": "exponential",
-        "poolContract": "0x52151DDaDD02509a401792610e259F5dC463608E"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              39.18956270800679,
-              -4.638589163659124
-            ],
-            [
-              39.18956270800679,
-              -3.608004631635024
-            ],
-            [
-              39.877185707636201,
-              -3.608004631635024
-            ],
-            [
-              39.877185707636201,
-              -4.638589163659124
-            ],
-            [
-              39.18956270800679,
-              -4.638589163659124
-            ]
-          ]
-        ]
-      }
     }
   ]
 }
