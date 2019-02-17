@@ -1,7 +1,7 @@
-interface BasicProperties {
+export interface BasicProperties {
   name: string;
 }
-interface BountyProperties extends BasicProperties {
+export interface BountyProperties extends BasicProperties {
   fid: number;
   author?: string | null;
   totalPool?: number | null;
@@ -15,15 +15,15 @@ interface BountyProperties extends BasicProperties {
   poolContract?: string | null;
 }
 
-interface Crs {
+export interface Crs {
   type: string;
   properties: BasicProperties;
 }
-interface Geometry {
+export interface Geometry {
   type: string;
   coordinates: number[][][];
 }
-interface Feature {
+export interface Feature {
   type: string;
   properties: BountyProperties;
   geometry: Geometry;

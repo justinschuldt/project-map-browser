@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import './App.less';
 
 import { Button } from 'antd';
-var HDWalletProvider = require('truffle-hdwallet-provider');
-import gisWalletMnemonic from '../src/config/keys';
 
 import Portis from '@portis/web3';
 import Web3 from 'web3';
@@ -25,20 +23,6 @@ import {
 import { UserMetadataRepo } from './data/UserMetadataRepo';
 import { BountyMetadataRepo } from './data/BountyMetadataRepo';
 import { MapRepo } from './data/MapRepo';
-
-const geoFindMe = () => {
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(
-      (position: { coords: { latitude: number; longitude: number } }) => {
-        console.log('position.coords: ', position.coords);
-        resolve(position.coords);
-      },
-      err => {
-        reject(err);
-      }
-    );
-  });
-};
 
 class App extends Component {
   // Web3
@@ -78,8 +62,7 @@ class App extends Component {
   portisClicked() {
     const portis = new Portis(
       'b3f16d56-4b6c-434b-9c90-9ce46d496013',
-      'rinkeby' // ,
-      // { scope: ['email'] }
+      'rinkeby'
     );
 
     this.portis = portis;
@@ -394,10 +377,7 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <div className="logo" />
-          <LandingPage />
-          <Button type="primary" onClick={geoFindMe}>
-            get location
-          </Button>
+          <LandingPage web3={this.web3} />
           <Button type="primary" onClick={this.portisClicked}>
             Login with Portis
           </Button>
