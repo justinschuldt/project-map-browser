@@ -33,3 +33,20 @@ export enum BountyStages {
   Active,
   Dead
 }
+
+export interface RoyaltyDistribution {
+  address: any;
+  value: any;
+  bountyId: any;
+}
+
+export interface RoyaltyOwnerInfo {
+  address: any;
+  value: any;
+}
+
+export interface RoyaltyFinancesData {
+  initialFunding: any;
+  balance: any;
+  distributionPercent: any;
+}
