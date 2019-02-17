@@ -1,4 +1,7 @@
 # ProjectMap
+![](https://github.com/justinschuldt/project-map-browser/blob/master/images/logo.png)
+
+<img src="https://github.com/justinschuldt/project-map-browser/blob/master/images/logo.png" width="50">
 
 ## Overview
 Many areas of the world are under-mapped and even in developed countries, disasters will cause meaningful topological changes to road networks, structures, and utilities. In 2018 alone, natural disasters cost $160B and killed 10,400.
