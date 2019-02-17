@@ -148,7 +148,7 @@ class App extends Component {
     this.contractsConnected = true;
 
     await this.getBounties();
-    await this.getAllRoyaltyDistributions();
+    await this.sendRoyaltyDistribution();
   }
 
   async initEventListeners() {}
@@ -243,6 +243,20 @@ class App extends Component {
 
   async sendRoyaltyDistribution() {
     const distrubtions = await this.getAllRoyaltyDistributions();
+
+    let payees = [];
+    let values = [];
+    let bountyIds = [];
+
+    for (let i = 0; i < distrubtions.length; i++) {
+      payees.push(distrubtions[i].address);
+      values.push(distrubtions[i].value);
+      bountyIds.push(distrubtions[i].bountyId);
+    }
+
+    await this.standardBountiesInstance.methods
+      .distributeRoyaltyFunds(bountyIds, values, payees)
+      .send();
   }
 
   async getAllRoyaltyDistributions(): Promise<Array<RoyaltyDistribution>> {
@@ -252,11 +266,14 @@ class App extends Component {
       .getNumBounties()
       .call();
 
+    console.log('numBounties', numBounties);
+
     for (let i = 0; i < numBounties; i++) {
       const distributions = await this.calculateRoyaltyDistribution(i);
       allDistributions.push(...distributions);
     }
 
+    console.log('All distributions', allDistributions);
     return allDistributions;
   }
 
@@ -265,9 +282,11 @@ class App extends Component {
   ): Promise<Array<RoyaltyDistribution>> {
     let royaltyFinances: RoyaltyFinancesData = {} as RoyaltyFinancesData;
 
-    const financesData = await this.gisStandardBountiesInstance.methods
+    const financesData = await this.standardBountiesInstance.methods
       .getRoyaltyFinances(i)
       .call();
+
+    console.log(financesData);
 
     royaltyFinances.initialFunding = financesData[0];
     royaltyFinances.balance = financesData[1];
@@ -293,15 +312,16 @@ class App extends Component {
   async getRoyaltyOwners(bountyId: number) {
     let royaltyOwners: Array<RoyaltyOwnerInfo> = [];
 
-    const numRoyalties = await this.gisStandardBountiesInstance.methods
-      .getRoyaltyOwnerCount()
+    const numRoyalties = await this.standardBountiesInstance.methods
+      .getRoyaltyOwnerCount(bountyId, 0)
       .call();
 
     for (let i = 0; i < numRoyalties; i++) {
-      const ownerInfo = await this.gisStandardBountiesInstance.methods.getRoyaltyOwner(
-        bountyId,
-        i
-      );
+      const ownerInfo = await this.standardBountiesInstance.methods
+        .getRoyaltyOwner(bountyId, i)
+        .call();
+
+      console.log('ownerInfo found', ownerInfo);
       royaltyOwners.push({
         address: ownerInfo[0],
         value: ownerInfo[1]
