@@ -56,15 +56,15 @@ class App extends Component {
     this.submitBounty = this.submitBounty.bind(this);
 
     // Default INFURA provider for read access
-    // this.setWeb3(
-    //   new Web3(
-    //     new Web3.providers.HttpProvider(
-    //       `https://rinkeby.infura.io/${process.env.REACT_APP_INFURA_API_KEY}`
-    //     )
-    //   )
-    // );
+    this.setWeb3(
+      new Web3(
+        new Web3.providers.HttpProvider(
+          `https://rinkeby.infura.io/${process.env.REACT_APP_INFURA_API_KEY}`
+        )
+      )
+    );
 
-    this.connectToMetamask();
+    // this.connectToMetamask();
 
     console.log('web3 infura connected', this.web3);
   }
