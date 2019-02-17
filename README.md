@@ -2,11 +2,14 @@
 ![](https://github.com/justinschuldt/project-map-browser/blob/master/images/readme_logo.PNG)
 
 ## Overview
-Many areas of the world are under-mapped and even in developed countries, disasters will cause meaningful topological changes to road networks, structures, and utilities. In 2018 alone, natural disasters cost $160B and killed 10,400.
+Many areas of the world are under-mapped and even in developed countries, disasters will cause meaningful topological changes to road networks, structures, and utilities.
 
-We propose a novel and extensible framework we feel to be superior to the standard “bounty”. We propose a split reward pool whereby users receive instant payout on verified map edits but contrary to the status quo will *continue* to receive royalty payments for the life of those edits. This is a natural gamification whereby edits in high demand areas or those which are commonly used in analysis will be rewarded.
+ProjectMap is a novel and extensible framework superior to the standard “bounty”. We propose a split reward pool whereby users receive instant payout on verified map edits but contrary to the status quo will *continue* to receive royalty payments for the life of those edits. This is a natural gamification whereby edits in high demand areas or those which are commonly used in analysis will be rewarded.
 
 Our royalty contract is engineered such that reward pools can incentivize more rapid response by enabling a time decay feature. It also provides mechanisms for the reward recipients to reinvest or donate funds back into the pool or to other humanitarian projects.
+
+## About this repo
+This is a React application built for browsers and phones. We demonstrate reading from and writing to our contracts as users interact with Google Maps. The onboarding process to earning Ether with ProjectMap was designed for anyone with an email account.
 
 ## Royalty Payment Mechanism
 Our incentivization mechanism splits an initial contract pool into two new contracts, apportioning between a “bounty” and “royalty” payout. The contract owner can designate the percentage split – choosing to prefer the fixed one-time bounty approach or, conversely, they can apportion the majority to long-term taxation style economics whereby increased usage of a map edit tends to accrue value.
