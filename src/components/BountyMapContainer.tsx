@@ -25,7 +25,7 @@ export class BountyMapContainer extends Component<IMapContainerProps> {
         </Card>
         <Map
           google={this.props.google}
-          zoom={8}
+          zoom={10}
           initialCenter={{
             lat: -4.03,
             lng: 39.6
