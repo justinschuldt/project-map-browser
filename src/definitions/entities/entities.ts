@@ -1,5 +1,4 @@
 import { RoyaltyFinancesData } from './entities';
-import { AnyTxtRecord } from 'dns';
 export interface UserMetadata {
   name: string;
   bio: string;

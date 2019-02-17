@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './App.less';
 
 import { Button } from 'antd';
+var HDWalletProvider = require('truffle-hdwallet-provider');
+import gisWalletMnemonic from '../src/config/keys';
 
 import Portis from '@portis/web3';
 import Web3 from 'web3';
@@ -110,7 +112,7 @@ class App extends Component {
   }
 
   async initContractInstances() {
-    if (!this.web3) {
+    if (!this.web3 || !this.gisWeb3) {
       return;
     }
     this.standardBountiesInstance = new this.web3.eth.Contract(
