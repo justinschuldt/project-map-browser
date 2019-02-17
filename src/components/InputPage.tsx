@@ -32,6 +32,12 @@ export class InputPage extends Component<IInputPageProps> {
       feature
     }));
   }
+
+  async loadBountyInfo() {
+    const bounty = await this.props.getBounty(this.props.match.params.id);
+    this.setState({ bounty: bounty });
+  }
+
   submitBounty(geoData: any) {
     console.log('InputPage.submitBounty() geoData: ', geoData);
     if (this.props.submitBounty) {
