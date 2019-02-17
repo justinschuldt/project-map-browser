@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Map, GoogleApiWrapper } from 'google-maps-react'
 import { Button, Card, Icon, Modal } from 'antd'
 import { Feature } from '../data/AOI_JSON';
-
+import { Link } from 'react-router-dom';
 interface IInputMapContainerProps {
   google?: any
   inputComplete: (geoData: any) => Promise<any>
@@ -189,8 +189,8 @@ export class InputMapContainer extends Component<IInputMapContainerProps> {
           google={this.props.google}
           zoom={7}
           initialCenter={{
-            lat: -3.7853519,
-            lng: 38.5534278
+            lat: -4,
+            lng: 39.7
           }}
           onReady={this.onMapReady}
           fullscreenControl={false}
@@ -211,7 +211,7 @@ export class InputMapContainer extends Component<IInputMapContainerProps> {
           ]}
         >
           <p>Your submission was accepted.</p>
-          <p>It will be reviewed, check the <a href="/users">users page</a> for updates.</p>
+          <p>It will be reviewed, check the <Link to="/user">users page</Link> for updates.</p>
           <p>Thanks for contributing to Project Map.</p>
         </Modal>
       </>
