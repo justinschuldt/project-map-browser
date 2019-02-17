@@ -16,6 +16,7 @@ interface ILandingPageProps {
     fulfillmentId: any,
     percentage: number
   ) => void;
+  getBounty: (bountyId: number) => Promise<Bounty>;
 }
 class LandingPage extends Component<ILandingPageProps> {
   constructor(props: ILandingPageProps) {
@@ -30,7 +31,11 @@ class LandingPage extends Component<ILandingPageProps> {
             <Route
               path="/bounty/:id"
               render={routerProps => (
-                <InputPage web3={this.props.web3} match={routerProps.match} />
+                <InputPage
+                  web3={this.props.web3}
+                  match={routerProps.match}
+                  getBounty={this.props.getBounty}
+                />
               )}
             />
             <Route
@@ -45,7 +50,6 @@ class LandingPage extends Component<ILandingPageProps> {
                 />
               )}
             />
-
           </>
         </Router>
       </div>
