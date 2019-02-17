@@ -5,7 +5,7 @@ import { Feature } from '../data/AOI_JSON';
 
 interface IInputMapContainerProps {
   google?: any
-  inputComplete: (geoData: any) => void
+  inputComplete: (geoData: any) => Promise<any>
   feature: Feature
 }
 interface PolylineFeature {
@@ -153,16 +153,20 @@ export class InputMapContainer extends Component<IInputMapContainerProps> {
       strokeColor: '#3ae031',
       strokeWeight: 4
     });
-    this.map.data.toGeoJson((data: any) => {
+    this.map.data.toGeoJson(async (data: any) => {
       console.log('toGeoJson, about to submit: ', data)
-      this.props.inputComplete(data)
-
-      setTimeout(() => {
+      try {
+        await this.props.inputComplete(data)
+        console.log('input complete returned')
         this.setState(() => ({
           submitting: false,
           showSuccessModal: true
         }))
-      }, 3000)
+
+      } catch (e) {
+        console.log('submit failed. e: ', e)
+      }
+
     });
   }
   dismissSuccess() {

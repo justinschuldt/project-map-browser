@@ -18,7 +18,7 @@ interface ILandingPageProps {
     percentage: number
   ) => void;
   getBounty: (bountyId: number) => Promise<Bounty>;
-  submitBounty?: (bountyId: number, data: any) => void;
+  submitBounty?: (bountyId: number, data: any) => Promise<any>;
 }
 class LandingPage extends Component<ILandingPageProps> {
   constructor(props: ILandingPageProps) {

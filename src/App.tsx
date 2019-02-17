@@ -70,16 +70,23 @@ class App extends Component {
   }
 
   portisClicked() {
-    const portis = new Portis(
-      'b3f16d56-4b6c-434b-9c90-9ce46d496013',
-      'rinkeby'
-    );
+    return new Promise((resolve, reject) => {
+      const portis = new Portis(
+        'b3f16d56-4b6c-434b-9c90-9ce46d496013',
+        'rinkeby'
+      );
+      this.portis = portis;
+      this.portis.onLogin((walletAddress: string) => {
+        console.log('portis login callback, walletAddress: ', walletAddress)
+        this.userLoggedIn = true;
+        if (this.portis) {
+          this.setWeb3(new Web3(this.portis.provider));
+          resolve()
+        }
+      })
+      portis.showPortis();
 
-    this.portis = portis;
-    this.userLoggedIn = true;
-    console.log(this.portis);
-
-    this.setWeb3(new Web3(portis.provider));
+    })
   }
 
   async blocknativeClicked() {
@@ -268,14 +275,19 @@ class App extends Component {
       await this.portisClicked();
     }
 
-    console.log('bounty submitted', bountyId);
-
     const accounts = await this.web3.eth.getAccounts();
 
-    await this.standardBountiesInstance.methods
-      .fulfillBounty(bountyId, '1')
-      // @ts-ignore
-      .send({ from: accounts[0] });
+    try {
+      await this.standardBountiesInstance.methods
+        .fulfillBounty(bountyId, '1')
+        // @ts-ignore
+        .send({ from: accounts[0] });
+
+      // returning will resolve the async/await
+      return
+    } catch (e) {
+      throw e
+    }
   }
 
   async getTokenBalance(address: string) {
@@ -299,7 +311,7 @@ class App extends Component {
     console.log('contract instances init');
   }
 
-  async initEventListeners() {}
+  async initEventListeners() { }
 
   // Mass of blockchain actions
   async getBounties() {

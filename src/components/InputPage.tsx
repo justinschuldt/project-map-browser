@@ -11,7 +11,7 @@ const mockDataFindById = (id: number) => {
 interface IInputPageProps {
   match: any;
   web3: any;
-  submitBounty?: (bountyId: number, data: any) => void;
+  submitBounty?: (bountyId: number, data: any) => Promise<any>;
   getBounty: (bountyId: number) => Promise<Bounty>;
 }
 
@@ -42,7 +42,7 @@ export class InputPage extends Component<IInputPageProps> {
   submitBounty(geoData: any) {
     console.log('InputPage.submitBounty() geoData: ', geoData);
     if (this.props.submitBounty) {
-      this.props.submitBounty(this.props.match.params.id, geoData);
+      return this.props.submitBounty(this.props.match.params.id, geoData);
     }
   }
   render() {
