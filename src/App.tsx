@@ -63,9 +63,11 @@ class App extends Component {
     this.blocknativeClicked = this.blocknativeClicked.bind(this);
 
     // Default INFURA provider for read access
-    this.web3 = new Web3(
-      new Web3.providers.HttpProvider(
-        `https://rinkeby.infura.io/${process.env.REACT_APP_INFURA_API_KEY}`
+    this.setWeb3(
+      new Web3(
+        new Web3.providers.HttpProvider(
+          `https://rinkeby.infura.io/${process.env.REACT_APP_INFURA_API_KEY}`
+        )
       )
     );
 
@@ -83,17 +85,9 @@ class App extends Component {
     this.portis = portis;
     console.log(this.portis);
 
-    const web3 = new Web3(portis.provider);
-    if (web3) {
-      this.web3 = web3;
-      console.log('web3 available');
-      web3.eth.getAccounts((error, accounts) => {
-        console.log(accounts);
-      });
-
-      this.initContractInstances();
-    }
+    this.setWeb3(new Web3(portis.provider));
   }
+
   async blocknativeClicked() {
     const bnKey = 'd7603484-6a29-4dab-898b-f6a57f36e83d';
     const main = 1;
@@ -109,6 +103,64 @@ class App extends Component {
       // user exited onboarding before completion
       console.log(error.msg);
     }
+  }
+
+  async setWeb3(web3: Web3) {
+    if (web3) {
+      this.web3 = web3;
+      console.log('web3 available');
+      web3.eth.getAccounts((error, accounts) => {
+        console.log(accounts);
+      });
+
+      this.initContractInstances();
+    }
+  }
+
+  // @ts-ignore
+  async connectToMetamask() {
+    // Modern dapp browsers...
+    // @ts-ignore
+    if (window.ethereum) {
+      // @ts-ignore
+      this.setWeb3(new Web3(ethereum));
+      try {
+        // Request account access if needed
+        // @ts-ignore
+        await ethereum.enable();
+        // Acccounts now exposed
+        // @ts-ignore
+        web3.eth.sendTransaction({
+          /* ... */
+        });
+      } catch (error) {
+        // User denied account access...
+      }
+    }
+    // Legacy dapp browsers...
+    // @ts-ignore
+    else if (window.web3) {
+      // @ts-ignore
+      this.setWeb3(new Web3(web3.currentProvider));
+      // Acccounts always exposed
+      // @ts-ignore
+      web3.eth.sendTransaction({
+        /* ... */
+      });
+    }
+    // Non-dapp browsers...
+    else {
+      console.log(
+        'Non-Ethereum browser detected. You should consider trying MetaMask!'
+      );
+    }
+  }
+
+  async submitBounty(bountyId: number, data: any) {
+    this.standardBountiesInstance.methods
+      .fulfillBounty()
+      // @ts-ignore
+      .send({ from: this.web3.eth.accounts[0] });
   }
 
   async initContractInstances() {
