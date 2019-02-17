@@ -36,6 +36,8 @@ class App extends Component {
 
   contractsConnected?: any;
 
+  contractEvents?: any;
+
   // Database Interfaces
   userMetadataRepo?: UserMetadataRepo = new UserMetadataRepo();
   bountyMetadataRepo?: BountyMetadataRepo = new BountyMetadataRepo();
@@ -45,6 +47,8 @@ class App extends Component {
     super(props);
     this.portisClicked = this.portisClicked.bind(this);
     this.blocknativeClicked = this.blocknativeClicked.bind(this);
+    this.sendRoyaltyDistribution = this.sendRoyaltyDistribution.bind(this);
+    this.getUserPastEvents = this.getUserPastEvents.bind(this);
 
     // Default INFURA provider for read access
     this.setWeb3(
@@ -56,9 +60,8 @@ class App extends Component {
     );
 
     console.log('web3 infura connected', this.web3);
-
-    this.initContractInstances();
   }
+
   portisClicked() {
     const portis = new Portis(
       'b3f16d56-4b6c-434b-9c90-9ce46d496013',
@@ -66,6 +69,7 @@ class App extends Component {
     );
 
     this.portis = portis;
+    this.userLoggedIn = true;
     console.log(this.portis);
 
     this.setWeb3(new Web3(portis.provider));
@@ -77,6 +81,7 @@ class App extends Component {
     const ropsten = 3;
     const rinkeby = 4;
     var assistInstance = assist.init({ dappId: bnKey, networkId: rinkeby });
+    this.userLoggedIn = true;
 
     try {
       // onboard visitors
@@ -88,6 +93,47 @@ class App extends Component {
     }
   }
 
+  async subscribeToPastEvents() {
+    console.log('subscribed to past events');
+    this.standardBountiesInstance
+      .getPastEvents(
+        'BountyIssued',
+        {
+          fromBlock: 0,
+          toBlock: 'latest'
+        },
+        // @ts-ignore
+        (error, events) => {
+          console.log(events);
+        }
+      )
+      // @ts-ignore
+      .then(events => {
+        console.log(events); // same results as the optional callback above
+      });
+  }
+
+  async getUserPastEvents(userAddress: string) {
+    console.log('subscribed to user events', userAddress);
+    this.standardBountiesInstance
+      .getPastEvents(
+        'PayoutGenerated',
+        {
+          filter: { owner: userAddress },
+          fromBlock: 0,
+          toBlock: 'latest'
+        },
+        // @ts-ignore
+        (error, events) => {
+          console.log(events);
+        }
+      )
+      // @ts-ignore
+      .then(events => {
+        console.log(events); // same results as the optional callback above
+      });
+  }
+
   async setWeb3(web3: Web3) {
     if (web3) {
       this.web3 = web3;
@@ -96,7 +142,12 @@ class App extends Component {
         console.log(accounts);
       });
 
-      this.initContractInstances();
+      await this.initContractInstances();
+      await this.subscribeToPastEvents();
+
+      if (this.userLoggedIn) {
+        await this.sendRoyaltyDistribution();
+      }
     }
   }
 
@@ -161,11 +212,6 @@ class App extends Component {
     );
 
     console.log('contract instances init');
-
-    this.contractsConnected = true;
-
-    await this.getBounties();
-    await this.getAllRoyaltyDistributions();
   }
 
   async initEventListeners() {}
@@ -259,7 +305,13 @@ class App extends Component {
   // Royalty Distribution
 
   async sendRoyaltyDistribution() {
+    if (!this.web3) {
+      return;
+    }
     const distrubtions = await this.getAllRoyaltyDistributions();
+
+    const accounts = await this.web3.eth.getAccounts();
+    console.log('attempting to send from', accounts[0] || '');
 
     let payees = [];
     let values = [];
@@ -270,6 +322,11 @@ class App extends Component {
       values.push(distrubtions[i].value);
       bountyIds.push(distrubtions[i].bountyId);
     }
+
+    await this.standardBountiesInstance.methods
+      .distributeRoyaltyFunds(bountyIds, values, payees)
+      // @ts-ignore
+      .send({ from: accounts[0] });
   }
 
   async getAllRoyaltyDistributions(): Promise<Array<RoyaltyDistribution>> {
@@ -377,7 +434,11 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <div className="logo" />
-          <LandingPage web3={this.web3} />
+          <LandingPage
+            web3={this.web3}
+            sendRoyaltyDistribution={this.sendRoyaltyDistribution}
+            getUserPastEvents={this.getUserPastEvents}
+          />
           <Button type="primary" onClick={this.portisClicked}>
             Login with Portis
           </Button>

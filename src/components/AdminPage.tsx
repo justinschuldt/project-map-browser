@@ -1,17 +1,21 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { Button, Card } from 'antd';
 
 interface IAdminPageProps {
-  web3: any
+  web3: any;
+  sendRoyaltyDistribution: () => void;
+  getUserPastEvents: (userAddress: string) => void;
 }
 
 class AdminPage extends Component<IAdminPageProps> {
   constructor(props: IAdminPageProps) {
-    super(props)
-    this.do = this.do.bind(this)
+    super(props);
+    this.do = this.do.bind(this);
   }
+
   do() {
-    console.log('button clicked')
+    this.props.sendRoyaltyDistribution();
+    console.log('button clicked');
   }
   render() {
     return (
@@ -21,7 +25,7 @@ class AdminPage extends Component<IAdminPageProps> {
           <Button onClick={this.do}>do action</Button>
         </Card>
       </div>
-    )
+    );
   }
 }
-export default AdminPage
+export default AdminPage;
