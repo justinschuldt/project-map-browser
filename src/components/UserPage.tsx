@@ -53,7 +53,7 @@ class UserPage extends Component<IUserPageProps> {
       >
         <Skeleton loading={this.state.loading} avatar active>
           <Meta
-            avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+            avatar={<Avatar icon="user" size="large" />}
             title="Total Earned: $4.32"
             description="Joined 18 Hours ago"
           />
