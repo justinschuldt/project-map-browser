@@ -21,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/justinschuldt/project-map-browser/issues"
   },
-  "homepage": "https://justinschuldt.github.io/project-map-browser/",
+  "homepage": "https://projectmap.world",
   "dependencies": {
     "@craco/craco": "3.4.0",
     "@portis/web3": "2.0.0-beta.11",
