@@ -8,7 +8,9 @@
     "build": "craco build",
     "test": "CI=true react-scripts test",
     "test-co": "craco test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "repository": {
     "type": "git",
@@ -19,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/justinschuldt/project-map-browser/issues"
   },
-  "homepage": "https://github.com/justinschuldt/project-map-browser#readme",
+  "homepage": "https://justinschuldt.github.io/project-map-browser/",
   "dependencies": {
     "@craco/craco": "3.4.0",
     "@portis/web3": "2.0.0-beta.11",
@@ -31,6 +33,7 @@
     "antd": "3.13.2",
     "bnc-assist": "0.3.3",
     "craco-antd": "1.10.0",
+    "gh-pages": "2.0.1",
     "google-maps-react": "2.0.2",
     "react": "16.7.0",
     "react-dom": "16.7.0",
